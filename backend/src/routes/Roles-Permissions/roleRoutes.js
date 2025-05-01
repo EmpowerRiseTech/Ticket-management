@@ -1,11 +1,13 @@
 import express from "express";
-import { getRoles, createRole, updateRole, deleteRole, seedDefaultRoles } from "../../controllers/Roles&Permissions/roleController.js";
+import { getRoles, createRole, updateRole, deleteRole, seedDefaultRoles, createRoles } from "../../controllers/Roles&Permissions/roleController.js";
 
 const router = express.Router();
 
 router.get("/", getRoles);
 
 router.post("/", createRole);
+
+router.post('/mutiple',createRoles)
 
 router.put("/:id", updateRole);
 

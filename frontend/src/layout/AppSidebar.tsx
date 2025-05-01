@@ -32,72 +32,73 @@ const navItems: NavItem[] = [
     icon: <GridIcon />,
     name: "Dashboard",
     path: "/",
-    visible: hasPermission('can_read_dashboard', 'Dashboard'), // Check permission
+    visible: hasPermission('view', 'Dashboard'), // Check 'view' permission for Dashboard
   },
   {
     icon: <GridIcon />,
     name: "Masters",
-    visible: hasPermission('read', 'Manage Menu'),
+    visible: hasPermission('read', 'Manage Menu'), // Check permission for 'Masters' section
     subItems: [
       {
         name: "Designation",
         path: "/designation",
         pro: false,
-        visible: hasPermission('can_read_designation', 'Masters'), // Check permission
+        visible: hasPermission('can_create_designation', 'Designation Management') || hasPermission('can_read_designation', 'Masters'), // Check 'create' or 'view' permission for Designation
       },
       {
         name: "Branch",
         path: "/branch",
         pro: false,
-        visible: hasPermission('read', 'Branch Permissions'), // Check permission
+        visible: hasPermission('view', 'Branch Management') || hasPermission('can_read_branch', 'Masters'), // Check 'create' or 'view' permission for Branch
       },
       {
         name: "Department",
         path: "/department",
         pro: false,
-        visible: hasPermission('can_read_department', 'Masters'), // Check permission
+        visible: hasPermission('view', 'Department Management') || hasPermission('can_read_department', 'Masters'), // Check 'create' or 'view' permission for Department
       },
       {
         name: "Employee",
         path: "/employee",
         pro: false,
-        visible: hasPermission('can_read_employee', 'Masters'), // Check permission
+        visible: hasPermission('view', 'Employee Management') || hasPermission('can_read_employee', 'Masters'), // Check 'create' or 'view' permission for Employee
       },
       {
         name: "Asset Management",
         path: "/asset-management",
         pro: false,
-        visible: hasPermission('can_read_asset_management', 'Masters'), // Check permission
+        visible: hasPermission('view', 'Asset Management') || hasPermission('create', 'Asset Management'), // Check 'create' or 'view' permission for Asset Management
       },
     ],
   },
   {
     icon: <GridIcon />,
     name: "Vendors",
-    visible: hasPermission('can_read_dashboard', 'Dashboard'),
+    visible: hasPermission('view', 'Vendor Management'),
     subItems: [
       {
         name: "Vendor",
         path: "/vendor",
         pro: false,
-        visible: hasPermission('can_read_vendor', 'Vendors'), // Check permission
+        visible: hasPermission('view', 'Vendor Management') || hasPermission('view', 'Vendor Management'), // Check 'create' or 'view' permission for Vendor
       },
     ],
   },
   {
     icon: <GridIcon />,
     name: "Tickets",
-    visible: hasPermission('read', 'Ticket Permissions'), // Check permission
+    visible: hasPermission('view', 'Ticket Management'),
     subItems: [
       {
         name: "New Tickets",
         path: "/ticket",
         pro: false,
-        visible: hasPermission('read', 'Ticket Permissions'), // Check permission
+        visible: hasPermission('create', 'Ticket Management') || hasPermission('read', 'Ticket Management'), // Check 'create' or 'view' permission for Tickets
       },
     ],
   },
 ];
+
 
 console.log(navItems,"navItems")
 

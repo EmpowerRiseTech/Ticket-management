@@ -22,6 +22,26 @@ export const createRole = async (req, res) => {
   }
 };
 
+export const createRoles = async (req, res) => {
+  try {
+    const roles = req.body.roles;
+
+    if (!Array.isArray(roles) || roles.length === 0) {
+      return res.status(400).json({ message: "Roles data is required and must be an array." });
+    }
+
+    const createdRoles = await Role.bulkCreate(roles);
+
+    return res.status(201).json({
+      message: "Roles created successfully.",
+      data: createdRoles,
+    });
+  } catch (error) {
+    console.error("Error creating roles:", error);
+    return res.status(500).json({ message: "An error occurred while creating roles.", error: error.message });
+  }
+};
+
 
 // Update a Role
 export const updateRole = async (req, res) => {

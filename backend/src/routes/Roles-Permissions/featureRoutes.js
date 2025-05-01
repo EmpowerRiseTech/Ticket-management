@@ -4,7 +4,7 @@ import {
   createFeature,
   updateFeature,
   deleteFeature,
-  seedDefaultFeatures,
+  seedDefaultFeatures,mutipleFeatures
 } from "../../controllers/Roles&Permissions/featureController.js";
 
 const router = express.Router();
@@ -15,6 +15,7 @@ router.get("/", getFeatures);
 
 router.post("/", createFeature);
 
+router.post('/mutiple',mutipleFeatures)
 
 router.put("/:id", updateFeature);
 

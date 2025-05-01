@@ -21,6 +21,29 @@ export const createFeature = async (req, res) => {
   }
 };
 
+export const mutipleFeatures = async (req,res) => {
+  const { features } = req.body
+  if(!Array.isArray(features) || features.length === 0 ){
+    return res.status(400).json({
+      sucess: false,
+      message: "Invalid input. 'features' should be non-empty array"
+    })
+  }
+  try {
+    const createFeatures = await Feature.bulkCreate(features,{
+      validate: true,
+      individualHooks: true
+    })
+    res.status(201).json({ success: true,message: "Features created successfully.",data: createFeatures})
+  } catch (error) {
+    console.log(error,"eror")
+    res.status(500).json({
+      sucess: false,
+      message : "An error accured while creating tickets",
+      error: error?.message
+    })
+  }
+}
 
 export const updateFeature = async (req, res) => {
   const { id } = req.params;

@@ -31,9 +31,25 @@ const Feature = sequelize.define(
   }
 );
 
-Feature.addHook("beforeCreate", async (feature) => {
-  const count = await Feature.count();
-  feature.sequenceId = `FEAT-${String(count + 1).padStart(6, "0")}`;
+Feature.addHook("beforeBulkCreate", async (features) => {
+  // Fetch the latest sequenceId to increment from the last record
+  const lastFeature = await Feature.findOne({
+    order: [['sequenceId', 'DESC']],
+    attributes: ['sequenceId'],
+  });
+
+  let lastId = lastFeature?.sequenceId?.split('-')[1] || '000000';  // If no records, start from FEAT-000000
+  
+  // Update each feature's sequenceId before bulk insert
+  features.forEach((feature) => {
+    lastId = (parseInt(lastId, 10) + 1).toString().padStart(6, '0');
+    feature.sequenceId = `FEAT-${lastId}`;
+  });
 });
+
+// Feature.addHook("beforeCreate", async (feature) => {
+//   const count = await Feature.count();
+//   feature.sequenceId = `FEAT-${String(count + 1).padStart(6, "0")}`;
+// });
 
 export default Feature;

@@ -1,5 +1,6 @@
 import Permission from "../../models/Roles and Permissions/permission.js";
-
+import Role from "../../models/Roles and Permissions/role.js";
+import Feature from "../../models/Roles and Permissions/feature.js";
 
 export const getPermissions = async (req, res) => {
   try {
@@ -70,5 +71,51 @@ export const seedDefaultPermissions = async (req, res) => {
     res.status(200).json({ message: "Default permissions seeded successfully" });
   } catch (err) {
     res.status(500).json({ message: "Failed to seed default permissions", error: err.message });
+  }
+};
+
+export const bulkCreatePermissionsByRoleAndFeature = async (req, res) => {
+  try {
+    const { permissions } = req.body;
+
+    if (!Array.isArray(permissions) || permissions.length === 0) {
+      return res.status(400).json({ message: "Permissions data is required." });
+    }
+
+    const formattedPermissions = [];
+
+    for (const permission of permissions) {
+      const { roleName, featureNames, actions, conditions } = permission;
+
+      const role = await Role.findOne({ where: { name: roleName } });
+      if (!role) {
+        return res.status(400).json({ message: `Role '${roleName}' not found.` });
+      }
+
+      for (const featureName of featureNames) {
+        const feature = await Feature.findOne({ where: { name: featureName } });
+        if (!feature) {
+          return res.status(400).json({ message: `Feature '${featureName}' not found.` });
+        }
+
+        formattedPermissions.push({
+          roleId: role.id,
+          featureId: feature.id,
+          actions,
+          conditions: conditions || null,
+        });
+      }
+    }
+
+    const createdPermissions = await Permission.bulkCreate(formattedPermissions, {
+      validate: true,
+    });
+
+    res.status(201).json({
+      message: "Permissions created successfully.",
+      data: createdPermissions,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error creating permissions.", error });
   }
 };

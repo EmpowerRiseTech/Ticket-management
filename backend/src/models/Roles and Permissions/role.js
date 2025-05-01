@@ -41,4 +41,19 @@ const Role = sequelize.define(
 //   role.sequenceId = `ROLE-${String(count + 1).padStart(6, "0")}`;
 // });
 
+Role.addHook("beforeBulkCreate", async (roles) => {
+  const lastRole = await Role.findOne({
+    order: [['sequenceId', 'DESC']],
+    attributes: ['sequenceId'],
+  });
+
+  let lastId = lastRole?.sequenceId?.split('-')[1] || '000000';
+
+  roles.forEach((role) => {
+    lastId = (parseInt(lastId, 10) + 1).toString().padStart(6, '0');
+    role.sequenceId = `ROLE-${lastId}`;
+  });
+});
+
+
 export default Role;

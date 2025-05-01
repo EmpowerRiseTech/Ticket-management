@@ -110,6 +110,60 @@ export const forgotPassword = async (req, res) => {
   }
 };
 
+export const createUsersWithRoles = async (req, res) => {
+  try {
+    const { users } = req.body;
+
+    if (!Array.isArray(users) || users.length === 0) {
+      return res.status(400).json({
+        message: "Input must be a non-empty array of users.",
+      });
+    }
+
+    const createdUsers = [];
+
+    for (const userInput of users) {
+      const { name, email, password, roleName } = userInput;
+
+      if (!name || !email || !password || !roleName) {
+        return res.status(400).json({
+          message: "Each user must have name, email, password, and roleName.",
+        });
+      }
+
+      const role = await Role.findOne({ where: { name: roleName } });
+
+      if (!role) {
+        return res.status(404).json({
+          message: `Role with name "${roleName}" not found for user "${name}".`,
+        });
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      const user = await User.create({
+        name,
+        email,
+        password: hashedPassword,
+        roleId: role.id,
+      });
+
+      createdUsers.push(user);
+    }
+
+    return res.status(201).json({
+      message: "Users created successfully.",
+      users: createdUsers,
+    });
+  } catch (error) {
+    console.error("Error creating users with roles:", error);
+    return res.status(500).json({
+      message: "An error occurred while creating users.",
+      error: error.message,
+    });
+  }
+};
+
 
 // 🎯 Specific login endpoints
 export const masterAdminLogin = (req, res) => login(req, res, "Super Admin");

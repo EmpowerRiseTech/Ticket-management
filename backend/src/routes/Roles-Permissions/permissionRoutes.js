@@ -4,7 +4,7 @@ import {
   createPermission,
   updatePermission,
   deletePermission,
-  seedDefaultPermissions,
+  seedDefaultPermissions,bulkCreatePermissionsByRoleAndFeature
 } from "../../controllers/Roles&Permissions/permissionController.js";
 
 const router = express.Router();
@@ -14,6 +14,8 @@ router.get("/", getPermissions);
 
 
 router.post("/", createPermission);
+
+router.post('/mutiple',bulkCreatePermissionsByRoleAndFeature)
 
 
 router.put("/:id", updatePermission);
